@@ -30,13 +30,12 @@ class UsersTest {
 		.when()
 			.get("/users/1")
 		.then()
-			//.log().all()
+			.log().all()
 			.statusCode(is(200))
 			.body("id", is(1))
 			.body("name", containsString("Silva"))
 			.body("age", greaterThan(18))
-			.body("salary", is(1234.5678F))
-		;
+			.body("salary", is(1234.5678F));
 	}
 	
 	@Test
@@ -135,12 +134,12 @@ class UsersTest {
 	
 	@Test
 	public void deveSerializarUsuarioaoSalvar() {
-		User user = new User("Tiago", 38);
+		//User user = new User("Tiago", 38);
 		
 		given()
 			.baseUri("http://restapi.wcaquino.me")
 			.port(80)
-			.body(user)
+			//.body(user)
 			.contentType(ContentType.JSON)
 			//.log().all()
 		.when()
@@ -155,12 +154,12 @@ class UsersTest {
 	
 	@Test
 	public void deveDeserializarUsuario() {
-		User user = new User("Tiago", 38);
+		//User user = new User("Tiago", 38);
 		
 		User resUser = given()
 			.baseUri("http://restapi.wcaquino.me")
 			.port(80)
-			.body(user)
+			//.body(user)
 			.contentType(ContentType.JSON)
 			//.log().all()
 		.when()
@@ -178,10 +177,10 @@ class UsersTest {
 	
 	@Test
 	public void deveUtilizarURLParametrizavel() {
-		User user = new User("Tiago", 38);
+		//User user = new User("Tiago", 38);
 		
 		User resUser = given()
-			.body(user)
+			//.body(user)
 			.contentType(ContentType.JSON)
 			//.log().all()
 		.when()
@@ -221,11 +220,11 @@ class UsersTest {
 	
 	@Test
 	public void deveAtualizarUsuario() {
-		User user = new User("Tiago Eduardo", 38);
+		//User user = new User("Tiago Eduardo", 38);
 		
 		given()
 			.contentType(ContentType.JSON)
-			.body(user)
+			//.body(user)
 			.pathParam("id", 1)
 			//.log().all()
 		.when()
@@ -240,11 +239,11 @@ class UsersTest {
 	
 	@Test
 	public void deveAtualizarApenasNomeUsuario() {
-		User user = new User("Tiago Eduardo");
+		//User user = new User("Tiago Eduardo");
 		
 		given()
 			.contentType(ContentType.JSON)
-			.body(user)
+			//.body(user)
 			.pathParam("id", 1)
 			//.log().all()
 		.when()
@@ -297,8 +296,7 @@ class UsersTest {
 		.then()
 			.log().all()
 			.statusCode(200)
-			.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("userJsonSchema.json"))
-		;
+			.body(JsonSchemaValidator.matchesJsonSchemaInClasspath("userJsonSchema.json"));
 
 	}
 }

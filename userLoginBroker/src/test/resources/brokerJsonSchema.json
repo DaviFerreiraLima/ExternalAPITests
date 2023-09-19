@@ -1,0 +1,75 @@
+{
+    "type": "array",
+    "default": [],
+    "items": {
+        "type": "object",
+        "required": [
+            "id_cliente",
+            "user_id",
+            "cleansession",
+            "name",
+            "description",
+            "broker_port",
+            "broker_host",
+            "username",
+            "password",
+            "version",
+            "lastwilltopic",
+            "lastwillqos",
+            "lastwillmessage",
+            "lastwillretain",
+            "keepalive"
+        ],
+        "properties": {
+            "id_cliente": {
+                "type": "uuid"
+            },
+            "user_id": {
+                "type": "uuid"
+            },
+            "cleansession": {
+                "type": "boolean"
+            },
+            "name": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            },
+            "broker_port": {
+                "type": "int"
+            },
+            "broker_host": {
+                "type": "string"
+            },
+            "username": {
+                "type": "string"
+            },
+            "password": {
+                "type": "string"
+            },
+            "version": {
+                "type": "int"
+            },
+            "lastwilltopic": {
+                "type": "string"
+            },
+            "lastwillqos": {
+                "type": {
+                    "type": "int",
+                    "enum": [0, 1, 2],
+                    "names": ["AT_MOST_ONCE", "AT_LEAST_ONCE", "EXACTLY_ONCE"]
+                }
+            },
+            "lastwillmessage": {
+                "type": "string"
+            },
+            "lastwillretain": {
+                "type": "boolean"
+            },
+            "keepalive": {
+                "type": "int"
+            }
+        }
+    }
+}

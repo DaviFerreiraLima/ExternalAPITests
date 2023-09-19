@@ -1,0 +1,23 @@
+{
+    "type": "array",
+    "default": [],
+    "items": {
+        "type": "object",
+        "required": [
+            "id",
+            "name",
+            "email"
+        ],
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "email": {
+                "type": "string"
+            }
+        }
+    }
+}

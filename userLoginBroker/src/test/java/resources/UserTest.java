@@ -331,20 +331,20 @@ class UserTest {
 
 
     @Test
-    void deveRegistrarUmUsuarioSemSucessoEComProblemaDeValidacao(){
+    void deveRegistrarUmUsuarioSemSucessoEComProblemaDeValidacao() {
 
         User usuario = new User();
 
         String token = "laaslkjqweoiru1312390iowjdflkj329u0089";
 
         given()
-            .header("Authorization", token)
-            .contentType(ContentType.JSON)
-            .body(usuario)
-        .when()
-            .post("/user")
-        .then()
-            .statusCode(is(422))
-            .body("msg",is("Validation problem"));
-
+                .header("Authorization", token)
+                .contentType(ContentType.JSON)
+                .body(usuario)
+                .when()
+                .post("/user")
+                .then()
+                .statusCode(is(422))
+                .body("msg", is("Validation problem"));
+    }
 }
