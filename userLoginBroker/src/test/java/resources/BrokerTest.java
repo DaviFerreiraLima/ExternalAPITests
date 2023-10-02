@@ -19,7 +19,7 @@ class BrokerTest {
 
     @BeforeAll
     static void setUp() {
-        baseURI = "http://restapi.wcaquino.me";
+        baseURI = "/iot";
         port = 80;
     }
 

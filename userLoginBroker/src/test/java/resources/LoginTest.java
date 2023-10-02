@@ -6,6 +6,7 @@ import io.restassured.module.jsv.JsonSchemaValidator;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import resources.utils.JWTGenerator;
 
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.is;
@@ -16,24 +17,18 @@ class LoginTest {
 
     @BeforeAll
     static void setUp() {
-        baseURI = "http://restapi.wcaquino.me";
-        port = 80;
+        baseURI = "http://localhost:3003";
     }
 
     @Test
 
     void deveLogarComSucesso() {
 
-        JsonObject login = new JsonObject();
-
-        login.addProperty("cpf", "123.456.789-00");
-        login.addProperty("password", "12345678");
-
         given()
                 .contentType(ContentType.JSON)
-                .body(login)
+                .body("{\"cpf\":\"" + "123.456.789-00" + "\",\"password\":\"12345\"}")
         .when()
-                .post("/login")
+                .post("/login/login")
         .then()
                 .statusCode(is(201))
                 .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("loginJsonSchema.json"))
@@ -43,36 +38,26 @@ class LoginTest {
     @Test
     void deveLogarSemSucessoCamposIncorretos(){
 
-        JsonObject login = new JsonObject();
-
-        login.addProperty("cpf", "123");
-        login.addProperty("password", "123");
 
         given()
                 .contentType(ContentType.JSON)
-                .body(login)
+                .body("{\"cpf\":\"" + "123.456.789-00" + "\",\"password\":\"1234\"}")
         .when()
                 .post("/login")
         .then()
                 .statusCode(is(401))
-                .body("msg",is("Incorrect CPF or Password!"))
-                .header("Authorization", is(notNullValue()));
+                .body("msg",is("Incorrect CPF or Password!"));
     }
 
 
     @Test
     void deveLogarSemSucessoCamposInvalidados(){
 
-        JsonObject login = new JsonObject();
-
-        login.addProperty("cpf", "0273440510");
-        login.addProperty("password", "111111111111111111111111111111111111111111111111111111");
-
         given()
                 .contentType(ContentType.JSON)
-                .body(login)
+                .body("{\"cpf\":\"" + "" + "\",\"password\":\"\"}")
         .when()
-                .post("/login")
+                .post("/login/login")
         .then()
                 .statusCode(is(422))
                 .body("msg",is("Validation Problem."));
@@ -80,21 +65,16 @@ class LoginTest {
 
     @Test
 
-    void deveLogarSemSucessoESemAutorizacao(){
-
-        JsonObject login = new JsonObject();
-
-        login.addProperty("cpf", "0273440510");
-        login.addProperty("password", "111111111111111111111111111111111111111111111111111111");
+    void deveLogarSemSucessoComRequestMalFormado(){
 
         given()
                 .contentType(ContentType.JSON)
-                .body(login)
+                .body("{\"cpf\":\"" + "02734" + "\",\"password\":\"1\"}")
         .when()
             .post("/login")
         .then()
-            .statusCode(is(422))
-            .body("msg",is("Validation Problem."));
+            .statusCode(is(400))
+            .body("msg",is( "Malformed request. Check the sent data."));
     }
 
     @Test
@@ -112,17 +92,48 @@ class LoginTest {
             .body("msg",is("Access forbidden for this user."));
     }
 
-
     @Test
+        void deveAutorizarOAccessoSolicitadoDeInformaçõesDeLogin(){
 
-    void deveNaoAutorizarOAcessoAsolicitacaoDeInformacoesDeLogin(){
+             String cpf = "123.456.789-00";
+        String token = JWTGenerator.tokenGenerator("admin",cpf);
 
         given()
+                .header("Authorization", token)
+                .when()
+                .get("/login/login")
+                .then()
+                .statusCode(is(200))
+                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("loginJsonSchema.json"));
+    }
+    @Test
+    void deveNaoAutorizarOAcessoAsolicitacaoDeInformacoesDeLoginSemAutorizacao(){
+
+        String cpf = "123.456.789-1";
+        String token = JWTGenerator.tokenGenerator("noRole",cpf);
+
+        given()
+            .header("Authorization", token)
         .when()
-            .get("/login")
+            .get("/login/login")
         .then()
-            .statusCode(is(401))
-            .body("msg",is("User not logged in!"));
+            .statusCode(is(401));
+
+    }
+
+    @Test
+    void deveNaoAutorizarOAcessoAsolicitacaoDeInformacoesDeLoginSemPermissao(){
+
+        String cpf = "123.456.789-11";
+        String token = JWTGenerator.tokenGenerator("noRole",cpf);
+
+        given()
+            .header("Authorization", token)
+        .when()
+            .get("/login/login")
+        .then()
+            .statusCode(is(403))
+            .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("loginJsonSchema.json"));
 
     }
 }
