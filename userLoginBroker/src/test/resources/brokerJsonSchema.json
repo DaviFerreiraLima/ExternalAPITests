@@ -22,10 +22,10 @@
         ],
         "properties": {
             "id_cliente": {
-                "type": "uuid"
+                "type": "string"
             },
             "user_id": {
-                "type": "uuid"
+                "type": "string"
             },
             "cleansession": {
                 "type": "boolean"
@@ -37,7 +37,7 @@
                 "type": "string"
             },
             "broker_port": {
-                "type": "int"
+                "type": "number"
             },
             "broker_host": {
                 "type": "string"
@@ -49,14 +49,14 @@
                 "type": "string"
             },
             "version": {
-                "type": "int"
+                "type": "number"
             },
             "lastwilltopic": {
                 "type": "string"
             },
             "lastwillqos": {
                 "type": {
-                    "type": "int",
+                    "type": "number",
                     "enum": [0, 1, 2],
                     "names": ["AT_MOST_ONCE", "AT_LEAST_ONCE", "EXACTLY_ONCE"]
                 }
@@ -68,7 +68,7 @@
                 "type": "boolean"
             },
             "keepalive": {
-                "type": "int"
+                "type": "number"
             }
         }
     }

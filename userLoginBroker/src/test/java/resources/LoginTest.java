@@ -101,7 +101,7 @@ class LoginTest {
         given()
                 .header("Authorization", token)
                 .when()
-                .get("/login/login")
+                .get("/login")
                 .then()
                 .statusCode(is(200))
                 .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("loginJsonSchema.json"));
@@ -115,7 +115,7 @@ class LoginTest {
         given()
             .header("Authorization", token)
         .when()
-            .get("/login/login")
+            .get("/login")
         .then()
             .statusCode(is(401));
 

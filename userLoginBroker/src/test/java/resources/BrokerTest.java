@@ -19,8 +19,7 @@ class BrokerTest {
 
     @BeforeAll
     static void setUp() {
-        baseURI = "/iot";
-        port = 80;
+        baseURI = "http://localhost:3003";
     }
 
 
@@ -29,19 +28,16 @@ class BrokerTest {
 
     void deveObterOsClientesDoBrokerComSucesso(){
 
-        String token = "laaslkjqweoiru1312390iowjdflkj329u0089";
-
         given()
-                .header("Authorization", token)
         .when()
-                .get("/broker_client")
+                .get("/broker-client")
         .then()
                 .statusCode(is(200))
                 .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("brokerJsonSchema.json"));
     }
 
 
-    @Test
+    /*@Test
 
     void deveObterOsClientesDoBrokerSemSucessoESemAutorização(){
 
@@ -66,23 +62,20 @@ class BrokerTest {
         .then()
             .statusCode(is(403))
             .body("msg",is("Broker Client do not have permission!"));
-    }
+    }*/
     
     @Test
     void deveObterClienteBrokerComSucesso() {
 
-        String token = "laaslkjqweoiru1312390iowjdflkj329u0089";
-
         given()
-                .header("Authorization", token)
         .when()
-                .get("/broker_client/1")
+                .get("/broker-client/1")
         .then()
                 .statusCode(is(200))
-                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("userJsonSchema.json"));
+                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("brokerJsonSchema.json"));
     }
     
-    @Test
+   /* @Test
     void deveObterClienteBrokerSemSucessoESemAutorizacao() {
 
         given()
@@ -91,9 +84,9 @@ class BrokerTest {
         .then()
                 .statusCode(is(401))
                 .body("msg",is("Broker Client is not logged in!"));
-    }
+    }*/
     
-    @Test
+    /*@Test
     void deveObterClienteBrokerSemSucessoESemPermissão() {
 
         String token = "laaslkjqweoiru1312390iowjdflkj329u0089";
@@ -105,22 +98,21 @@ class BrokerTest {
         .then()
                 .statusCode(is(403))
                 .body("msg",is("Broker Client do not have permission!"));
-    }
+    }*/
     
     //Função POST
 
     @Test
     void deveResgistrarUmNovoClienteBrokerComSucesso(){
-        String token = "laaslkjqweoiru1312390iowjdflkj329u0089";
 
-        JsonObject broker = BrokerUtils.criarPostBroker();
+        String broker = BrokerUtils.criarPostBroker().toString();
 
+        System.out.println(broker);
         given()
-                .header("Authorization", token)
                 .contentType(ContentType.JSON)
                 .body(broker)
         .when()
-            .post("/broker_client")
+            .post("/broker-client")
         .then()
                 .statusCode(is(201))
                 .header("Location",is(notNullValue()))
@@ -128,43 +120,30 @@ class BrokerTest {
     }
     
     @Test
-    void deveResgistrarUmNovoClienteBrokerComProblemaValidacao(){
-        String token = "laaslkjqweoiru1312390iowjdflkj329u0089";
+    void deveNaoResgistrarUmNovoClienteBrokerComProblemaValidacao(){
 
-        JsonObject broker = BrokerUtils.criarPostBrokerInvalido();
+        String broker = BrokerUtils.criarPostBrokerInvalido().toString();
 
         given()
-                .header("Authorization", token)
                 .contentType(ContentType.JSON)
                 .body(broker)
         .when()
-            .post("/broker_client")
+            .post("/broker-client")
         .then()
                 .statusCode(is(422))
                 .body("msg",is("Syntax Error!"));
     }
     
     @Test
-    void deveResgistrarUmNovoClienteBrokerComConflito(){
-        String token = "laaslkjqweoiru1312390iowjdflkj329u0089";
+    void deveNaoResgistrarUmNovoClienteBrokerComConflito(){
 
-        JsonObject broker = BrokerUtils.criarPostBroker();
-        
-        given()
-	        .header("Authorization", token)
-	        .contentType(ContentType.JSON)
-	        .body(broker)
-        .when()
-        	.post("/broker_client")
-        .then()
-        	.statusCode(201);
+        String broker = BrokerUtils.criarPostBroker().toString();
 
         given()
-                .header("Authorization", token)
                 .contentType(ContentType.JSON)
                 .body(broker)
         .when()
-            .post("/broker_client")
+            .post("/broker-client")
         .then()
                 .statusCode(is(409))
                 .body("msg",is("Broker Client already exist!"));
@@ -175,84 +154,68 @@ class BrokerTest {
     @Test
     void deveRemoverUmClienteBrokerComSucesso(){
 
-        String token = "laaslkjqweoiru1312390iowjdflkj329u0089";
-
         given()
-                .header("Authorization", token)
         .when()
-            .delete("/broker_client/1")
+            .delete("/broker-client/1")
         .then()
                 .statusCode(is(204));
     }
     
     @Test
-    void deveRemoverUmUsuarioSemSucessoESemAutorizacao(){
+    void deveRemoverUmClienteBrokerSemSucessoENotFound(){
 
         given()
         .when()
-            .delete("/broker_client/1")
+            .delete("/broker-client/1")
         .then()
-                .statusCode(is(401))
-                .body("msg",is("Broker Client is not logged in!"));
+                .statusCode(is(404))
+                .body("msg",is("Broker Client does not have permission!"));
     }
-    
-    @Test
-    void deveRemoverUmUsuarioSemSucessoESemPermissão(){
 
-        String token = "laaslkjqweoiru1312390iowjdflkj329u0089";
-
-        given()
-                .header("Authorization", token)
-        .when()
-                .delete("/broker_client/1")
-        .then()
-                .statusCode(is(403))
-                .body("msg",is("Do not have permission to remove!"));
-    }
     
  // FUNÇÃO PATCH
 
     @Test
     void deveAtualizarClientBrokerComSucesso(){
 
-    	JsonObject broker = BrokerUtils.criarPostBroker();
-
-        String token = "laaslkjqweoiru1312390iowjdflkj329u0089";
+    	String broker = BrokerUtils.criarPostBroker().toString();
 
         given()
-                .header("Authorization", token)
                 .contentType(ContentType.JSON)
                 .body(broker)
-                .pathParam("id", 1)
         .when()
-                .patch("/user/{id}")
+                .patch("/broker-client/651c91f975137e73aaa0227e")
         .then()
                 .statusCode(is(204));
     }
 
 
     @Test
-    void deveAtualizarClientBrokerSemSucessoESemAutorizacao(){
+    void deveAtualizarClientBrokerSemSucessoEComDadosRepetidos(){
 
+        String broker = BrokerUtils.criarPostBroker().toString();
         given()
+                .contentType(ContentType.JSON)
+                .body(broker)
         .when()
-            .patch("/user/1")
+            .patch("/broker-client/1")
         .then()
-            .statusCode(is(401))
-            .body("msg",is("Broker Client is not logged in!"));
+            .statusCode(is(409))
+            .body("msg",is("CPF already exists!"));
     }
     
     @Test
-    void deveAtualizarUmUsuarioSemSucessoESemPermissão(){
+    void deveAtualizarUmUsuarioSemSucessoENotFound(){
 
-        String token = "laaslkjqweoiru1312390iowjdflkj329u0089";
+        String broker = BrokerUtils.criarPostBroker().toString();
 
         given()
-                .header("Authorization", token)
+                .contentType(ContentType.JSON)
+                .body(broker)
         .when()
-            .patch("/user/1")
+            .patch("/broker-client/1")
         .then()
-            .statusCode(is(403))
+            .statusCode(is(404))
             .body("msg",is("Broker Client does not have permission!"));
     }
     

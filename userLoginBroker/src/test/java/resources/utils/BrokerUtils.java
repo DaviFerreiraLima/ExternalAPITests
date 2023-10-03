@@ -18,7 +18,8 @@ public class BrokerUtils {
         broker.addProperty("lastwilltopic", "lastwill_topic");
         JsonObject lastwillqos = new JsonObject();
         lastwillqos.addProperty("type", 1);
-        lastwillqos.addProperty("enum", "AT_LEAST_ONCE");
+        lastwillqos.addProperty("enum", 0);
+        lastwillqos.addProperty("names","AT_MOST_ONCE");
         broker.add("lastwillqos", lastwillqos);
         broker.addProperty("lastwillmessage", "Last Will Message");
         broker.addProperty("lastwillretain", true);
@@ -33,17 +34,17 @@ public class BrokerUtils {
         broker.addProperty("user_id", "");
         broker.addProperty("cleansession", true);
         broker.addProperty("name", "");
-        broker.addProperty("description", "Description for John Doe");
+        broker.addProperty("description", "");
         broker.addProperty("broker_port", 0);
-        broker.addProperty("broker_host", "mqtt.example.com");
-        broker.addProperty("username", "john_doe");
-        broker.addProperty("password", "mySecretPassword");
-        broker.addProperty("lastwilltopic", "lastwill_topic");
+        broker.addProperty("broker_host", "");
+        broker.addProperty("username", "");
+        broker.addProperty("password", "");
+        broker.addProperty("lastwilltopic", "");
         JsonObject lastwillqos = new JsonObject();
-        lastwillqos.addProperty("type", 1);
-        lastwillqos.addProperty("enum", "AT_LEAST_ONCE");
+        lastwillqos.addProperty("", 1);
+        lastwillqos.addProperty("", "AT_LEAST_ONCE");
         broker.add("lastwillqos", lastwillqos);
-        broker.addProperty("lastwillmessage", "Last Will Message");
+        broker.addProperty("lastwillmessage", "");
         broker.addProperty("lastwillretain", true);
         broker.addProperty("keepalive", 300);
 
